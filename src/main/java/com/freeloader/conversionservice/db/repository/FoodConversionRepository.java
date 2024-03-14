@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import com.freeloader.conversionservice.db.entities.FoodConversion;
 
+@Repository
 public interface FoodConversionRepository extends CrudRepository<FoodConversion, Long> {
 	
 	FoodConversion findByFoodIgnoreCase(String food);
@@ -15,6 +17,10 @@ public interface FoodConversionRepository extends CrudRepository<FoodConversion,
 	
 	@Query("SELECT DISTINCT food from FoodConversion")
 	List<String> findDistinctFoods();
+	
+	boolean existsByFood(String food);
+	
+	void deleteByFood(String food);
 		
 	
 }
