@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import com.freeloader.conversionservice.UOM;
 
-class ConversionServiceTest {
+class ConversionServiceImplTest {
 
 	@Test
 	void test() {

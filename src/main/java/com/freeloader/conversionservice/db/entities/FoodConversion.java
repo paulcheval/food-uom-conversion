@@ -8,13 +8,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @JsonIgnoreProperties
+@Table(name="FOOD_CONVERSION")
 public class FoodConversion {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Long id;
+	private Long id = -1L;
 	
 	private String food;
 	private Double teaSpoons;
@@ -97,10 +99,11 @@ public class FoodConversion {
 		if (getClass() != obj.getClass())
 			return false;
 		FoodConversion other = (FoodConversion) obj;
-		return Objects.equals(cups, other.cups) && Objects.equals(grams, other.grams) && Objects.equals(id, other.id)
+		return Objects.equals(cups, other.cups) && Objects.equals(grams, other.grams) 
 				&& Objects.equals(food, other.food) && Objects.equals(ounces, other.ounces)
 				&& Objects.equals(tableSpoons, other.tableSpoons) && Objects.equals(teaSpoons, other.teaSpoons);
 	}
+
 	
 	
 }
