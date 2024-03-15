@@ -14,12 +14,12 @@ public class DataLoader {
 
 	@PostConstruct
 	public void init() {
-		jdbcTemplate.update("insert into FOOD_CONVERSION (id,  food, cups, grams, ounces) values (?, ?, ?, ?, ?)",
-				new Object[] {'1',  "Flour", 1.0, 120.0, 4.25 });
-		jdbcTemplate.update("insert into FOOD_CONVERSION (id, food, cups, grams, ounces) values (?, ?, ?, ?, ?)",
-				new Object[] { 2,  "Apple Sauce", 1.0, 255.0, 9.0 });
-		jdbcTemplate.update("insert into FOOD_CONVERSION (id, food, cups, grams, ounces) values (?, ?, ?, ?, ?)",
-				new Object[] { 3,  "Grated Carrots", 1.0, 99.0, 3.5 });
+		//jdbcTemplate.update("insert into FOOD_CONVERSION (id,  food, cups, grams, ounces) values (?, ?, ?, ?, ?)",
+		//		new Object[] {'1',  "Flour", 1.0, 120.0, 4.25 });
+		//jdbcTemplate.update("insert into FOOD_CONVERSION (id, food, cups, grams, ounces) values (?, ?, ?, ?, ?)",
+		//		new Object[] { 2,  "Apple Sauce", 1.0, 255.0, 9.0 });
+		//jdbcTemplate.update("insert into FOOD_CONVERSION (id, food, cups, grams, ounces) values (?, ?, ?, ?, ?)",
+		//		new Object[] { 3,  "Grated Carrots", 1.0, 99.0, 3.5 });
 		/*
 		 * jdbcTemplate.
 		 * update("insert into FOOD_CONVERSION (id, food, tableSpoons, grams, ounces) values (?, ?, ?, ?, ?)"

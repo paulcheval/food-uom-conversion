@@ -23,15 +23,19 @@ public class FoodConversionServiceApplication {
 	public CommandLineRunner demo(FoodConversionRepository repository) {
 		return (args) -> {
 			
-			/*
-			 * repository.save(new FoodConversion("Flour", null, null, 1.0, 120.0, 4.25));
-			 * repository.save(new FoodConversion("Apple Sauce", null, null,1.0, 255.0,
-			 * 9.0)); repository.save(new FoodConversion("Grated Carrots", null, null,1.0,
-			 * 99.0, 3.5)); repository.save(new FoodConversion("Tomato Paste", null, 1.0,
-			 * null, 29.0, 1.0)); repository.save(new FoodConversion("Baking Powder", 1.0,
-			 * null, null, 4.0, null)); repository.save(new FoodConversion("Baking Soda",
-			 * 1.0, null, null, 6.0, null));
-			 */
+			
+			  repository.save(new FoodConversion("Flour", null, null, 1.0, 120.0, 4.25));
+			  repository.save(new FoodConversion("Apple Sauce", null, null,1.0, 255.0,
+			  9.0)); 
+			  repository.save(new FoodConversion("Grated Carrots", null, null,1.0,
+			  99.0, 3.5)); 
+			  repository.save(new FoodConversion("Tomato Paste", null, 1.0,
+			  null, 29.0, 1.0)); 
+			  repository.save(new FoodConversion("Baking Powder", 1.0,
+			  null, null, 4.0, null)); 
+			  repository.save(new FoodConversion("Baking Soda",
+			  1.0, null, null, 6.0, null));
+			 
 			 
 			 
 			  log.info("Conversions loaded are"); 
