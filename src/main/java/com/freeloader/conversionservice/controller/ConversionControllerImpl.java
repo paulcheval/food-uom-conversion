@@ -62,7 +62,7 @@ public class ConversionControllerImpl implements ConversionController {
 		List<String> allValidFoods = service.findAllValidFoods();
 		log.info("Found available foods of: " + allValidFoods.toString() );
 				
-		if (allValidFoods.isEmpty()) {
+		if (allValidFoods == null ||  allValidFoods.isEmpty()) {
 			return  new ResponseEntity<List<String>>(HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<List<String>>(allValidFoods, HttpStatus.OK); 

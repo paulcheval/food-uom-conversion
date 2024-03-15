@@ -16,7 +16,7 @@ import jakarta.persistence.Table;
 public class FoodConversion {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Long id = -1L;
+	private Long id;
 	
 	private String food;
 	private Double teaSpoons;

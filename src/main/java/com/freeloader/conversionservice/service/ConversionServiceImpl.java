@@ -8,7 +8,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.freeloader.conversionservice.UOM;
-
+import com.freeloader.conversionservice.conversion.FoodConversionConverter;
 import com.freeloader.conversionservice.db.entities.FoodConversion;
 import com.freeloader.conversionservice.db.repository.FoodConversionRepository;
 import com.freeloader.conversionservice.exception.FoodConversionAlreadyExistsException;
@@ -33,7 +33,7 @@ public class ConversionServiceImpl implements ConversionService {
 	public ConversionResponse findDetailsForFoodAndQuantity(ConversionRequest request) {
 		FoodConversion conversion = repository.findByFoodIgnoreCase(request.food());
 		if (conversion != null) {
-			return determineAmountBasedOnInputUnit(request, conversion);
+			return FoodConversionConverter.determineAmountBasedOnInputUnit(request, conversion);
 		}
 		return null;
 	}
@@ -45,8 +45,9 @@ public class ConversionServiceImpl implements ConversionService {
 
 	@Override
 	public List<String> findAllUomForFood(String food) {
-		FoodConversion conversion = repository.findByFoodIgnoreCase(food);
-		return determineValidUom(conversion);
+		if (food == null) { return new ArrayList<String>(); }
+		if (food.isEmpty()) { return new ArrayList<String>(); }
+		return FoodConversionConverter.determineValidUom(repository.findByFoodIgnoreCase(food));
 	}
 
 	@Override
@@ -60,7 +61,7 @@ public class ConversionServiceImpl implements ConversionService {
 		});
 		
 		allFoodConversions.forEach(food -> {
-			foodUoms.put(food.getFood(), determineValidUom(food));
+			foodUoms.put(food.getFood(), FoodConversionConverter.determineValidUom(food));
 		});
 		return foodUoms;
 	}
@@ -69,11 +70,12 @@ public class ConversionServiceImpl implements ConversionService {
 	public FoodConversionResponse createFoodConversion(FoodConversionRequest request) throws Exception {
 		 if (repository.existsByFood(request.food())) {
 			  throw new FoodConversionAlreadyExistsException(); } return
-			  convertToFoodCOnversionResponse(repository.save(buildFoodConversionEntity(
+			  convertToFoodConversionResponse(repository.save(buildFoodConversionEntity(
 			  request))); 
 	}
 
 	@Override
+	@Transactional
 	public void deleteFoodConversion(String food) throws Exception {
 		if (!repository.existsByFood(food)) { throw new
 			  FoodConversionNotExistException(); } repository.deleteByFood(food);
@@ -81,7 +83,7 @@ public class ConversionServiceImpl implements ConversionService {
 	}
 
 
-	private FoodConversionResponse convertToFoodCOnversionResponse(FoodConversion entity) {
+	private FoodConversionResponse convertToFoodConversionResponse(FoodConversion entity) {
 		return new FoodConversionResponse(entity.getFood(), entity.getTeaSpoons(), entity.getTableSpoons(),
 				entity.getCups(), entity.getGrams(), entity.getOunces());
 	}
@@ -90,49 +92,6 @@ public class ConversionServiceImpl implements ConversionService {
 		return new FoodConversion(request.food(), request.tsp(), request.tbsp(), request.cups(), request.grams(),
 				request.ounces());
 	}
-
-	private List<String> determineValidUom(FoodConversion conversion) {
-		List<String> validUom = new ArrayList<String>();
-		if (conversion.getCups() != null) {
-			validUom.add(UOM.CUPS.getName());
-		}
-		if (conversion.getGrams() != null) {
-			validUom.add(UOM.GRAMS.getName());
-		}
-		if (conversion.getOunces() != null) {
-			validUom.add(UOM.OUNCES.getName());
-		}
-		if (conversion.getTeaSpoons() != null) {
-			validUom.add(UOM.TSPS.getName());
-		}
-		if (conversion.getTableSpoons() != null) {
-			validUom.add(UOM.TBSP.getName());
-		}
-		return validUom;
-	}
-
-	private ConversionResponse determineAmountBasedOnInputUnit(ConversionRequest request, FoodConversion conversion) {
-		if (request.targetUnit().equalsIgnoreCase(UOM.GRAMS.getName())) {
-			return new ConversionResponse(request.food(), request.fromUnit(), request.fromAmount(),
-					request.targetUnit(), request.fromAmount() * conversion.getGrams());
-		}
-		if (request.targetUnit().equalsIgnoreCase(UOM.OUNCES.getName())) {
-			return new ConversionResponse(request.food(), request.fromUnit(), request.fromAmount(),
-					request.targetUnit(), request.fromAmount() * conversion.getOunces());
-		}
-		if (request.targetUnit().equalsIgnoreCase(UOM.TSPS.getName())) {
-			return new ConversionResponse(request.food(), request.fromUnit(), request.fromAmount(),
-					request.targetUnit(), request.fromAmount() * conversion.getTeaSpoons());
-		}
-		if (request.targetUnit().equalsIgnoreCase(UOM.TBSP.getName())) {
-			return new ConversionResponse(request.food(), request.fromUnit(), request.fromAmount(),
-					request.targetUnit(), request.fromAmount() * conversion.getTableSpoons());
-		}
-		return new ConversionResponse(request.food(), request.fromUnit(), request.fromAmount(), request.targetUnit(),
-				request.fromAmount() * conversion.getCups());
-	}
-
-
-	
+		
 	
 }
