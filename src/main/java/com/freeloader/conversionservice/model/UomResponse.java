@@ -1,5 +1,7 @@
 package com.freeloader.conversionservice.model;
 
-public record UomResponse() {
+import java.util.List;
 
+public record UomResponse(List<String> uoms) {
+	
 }

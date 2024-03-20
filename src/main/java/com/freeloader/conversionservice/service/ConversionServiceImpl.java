@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import com.freeloader.conversionservice.db.entities.FoodConversion;
 import com.freeloader.conversionservice.db.repository.FoodConversionRepository;
 import com.freeloader.conversionservice.exception.FoodConversionAlreadyExistsException;
 import com.freeloader.conversionservice.exception.FoodConversionNotExistException;
+import com.freeloader.conversionservice.exception.FoodsNotExistException;
 import com.freeloader.conversionservice.model.ConversionRequest;
 import com.freeloader.conversionservice.model.ConversionResponse;
 import com.freeloader.conversionservice.model.FoodConversionRequest;
@@ -30,17 +32,22 @@ public class ConversionServiceImpl implements ConversionService {
 	}
 
 	@Override
-	public ConversionResponse findDetailsForFoodAndQuantity(ConversionRequest request) {
-		FoodConversion conversion = repository.findByFoodIgnoreCase(request.food());
-		if (conversion != null) {
-			return FoodConversionConverter.determineAmountBasedOnInputUnit(request, conversion);
+	public ConversionResponse findDetailsForFoodAndQuantity(ConversionRequest request) throws  FoodConversionNotExistException {
+		Optional<FoodConversion> conversion = Optional.ofNullable(repository.findByFoodIgnoreCase(request.food()));		
+		if (conversion.isPresent()) {
+			return FoodConversionConverter.determineAmountBasedOnInputUnit(request, conversion.get());
 		}
-		return null;
+		
+		throw new FoodConversionNotExistException();
 	}
 
 	@Override
-	public List<String> findAllValidFoods() {
-		return repository.findDistinctFoods();
+	public List<String> findAllValidFoods() throws FoodsNotExistException{
+		Optional<List<String>> distinctFoods = Optional.ofNullable(repository.findDistinctFoods());
+		if (distinctFoods.isPresent()) {
+			return distinctFoods.get();
+		}
+		throw new FoodsNotExistException();
 	}
 
 	@Override
