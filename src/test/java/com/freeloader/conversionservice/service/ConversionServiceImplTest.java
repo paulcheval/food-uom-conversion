@@ -1,6 +1,10 @@
 package com.freeloader.conversionservice.service;
 
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -15,6 +19,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import com.freeloader.conversionservice.UOM;
 import com.freeloader.conversionservice.db.entities.FoodConversion;
 import com.freeloader.conversionservice.db.repository.FoodConversionRepository;
+import com.freeloader.conversionservice.exception.FoodConversionNotExistException;
+import com.freeloader.conversionservice.exception.FoodsNotExistException;
 import com.freeloader.conversionservice.model.ConversionRequest;
 import com.freeloader.conversionservice.model.ConversionResponse;
 import com.freeloader.conversionservice.model.FoodConversionRequest;
@@ -42,8 +48,8 @@ class ConversionServiceImplTest {
 
 	@Test
 	void ensureNullFindByFoodIgnoreCaseWhenFoodNotInDB() {
-		when(mockRepo.findByFoodIgnoreCase(BAD_FOOD_NAME)).thenReturn(null);		
-		assertNull(service.findDetailsForFoodAndQuantity(BAD_REQUEST));
+		when(mockRepo.findByFoodIgnoreCase(BAD_FOOD_NAME)).thenReturn(null);
+		assertThrows(FoodConversionNotExistException.class, () -> service.findDetailsForFoodAndQuantity(BAD_REQUEST) );		
 	}
 	
 	@Test
@@ -54,8 +60,8 @@ class ConversionServiceImplTest {
 	
 	@Test
 	void ensureNullfindAllValidFoodsWhenFoodNotInDB() {
-		when(mockRepo.findByFoodIgnoreCase(BAD_FOOD_NAME)).thenReturn(null);		
-		assertNull(service.findDetailsForFoodAndQuantity(BAD_REQUEST));
+		when(mockRepo.findByFoodIgnoreCase(BAD_FOOD_NAME)).thenReturn(null);
+		assertThrows(FoodConversionNotExistException.class, () -> service.findDetailsForFoodAndQuantity(BAD_REQUEST));		
 	}
 	
 	@Test

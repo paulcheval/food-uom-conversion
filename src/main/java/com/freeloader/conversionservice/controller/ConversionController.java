@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.freeloader.conversionservice.model.ConversionRequest;
@@ -15,8 +16,9 @@ import com.freeloader.conversionservice.model.ConversionResponse;
 import com.freeloader.conversionservice.model.FoodConversionRequest;
 import com.freeloader.conversionservice.model.FoodConversionResponse;
 import com.freeloader.conversionservice.model.UomRequest;
+import com.freeloader.conversionservice.model.UomResponse;
 
-
+@RequestMapping("/food-conversion")
 public interface ConversionController {
 	
 	@PostMapping("/convert")
@@ -26,7 +28,7 @@ public interface ConversionController {
 	public ResponseEntity<List<String>> retrieveValidFoods();
 	
 	@GetMapping("/foods/{foodId}/uom")
-	public ResponseEntity<List<String>>  retrieveValidUom(String food);
+	public ResponseEntity<UomResponse>  retrieveValidUom(String food);
 	
 	@GetMapping("/foods/uom")
 	public ResponseEntity<Map<String, List<String>>>  retrieveAllAvailableFoodsUom();

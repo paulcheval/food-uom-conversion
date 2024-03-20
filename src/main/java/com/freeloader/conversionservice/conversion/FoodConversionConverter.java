@@ -2,6 +2,7 @@ package com.freeloader.conversionservice.conversion;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import com.freeloader.conversionservice.UOM;
 import com.freeloader.conversionservice.db.entities.FoodConversion;
@@ -31,22 +32,22 @@ public class FoodConversionConverter {
 		return null;
 	}
 
-	private static ConversionResponse buildConversionResponse(ConversionRequest request, FoodConversion conversion, UomFunction getMethod) {
+	private static ConversionResponse buildConversionResponse(ConversionRequest request, FoodConversion conversion, Supplier<Double> method) {
 		if (request.fromUnit().equalsIgnoreCase(UOM.CUPS.getName())) {
 			return new ConversionResponse(request.food(), request.fromUnit(), request.fromAmount(),
-					request.targetUnit(), request.fromAmount() * getMethod.run()/conversion.getCups());
+					request.targetUnit(), request.fromAmount() * method.get()/conversion.getCups());
 		} else if (request.fromUnit().equalsIgnoreCase(UOM.TSPS.getName())) {
 			return new ConversionResponse(request.food(), request.fromUnit(), request.fromAmount(),
-					request.targetUnit(), request.fromAmount() * getMethod.run()/conversion.getTeaSpoons());
+					request.targetUnit(), request.fromAmount() * method.get()/conversion.getTeaSpoons());
 		} else if (request.fromUnit().equalsIgnoreCase(UOM.TBSP.getName())) {
 			return new ConversionResponse(request.food(), request.fromUnit(), request.fromAmount(),
-					request.targetUnit(), request.fromAmount() * getMethod.run()/conversion.getTableSpoons());
+					request.targetUnit(), request.fromAmount() * method.get()/conversion.getTableSpoons());
 		} else if (request.fromUnit().equalsIgnoreCase(UOM.OUNCES.getName())) {
 			return new ConversionResponse(request.food(), request.fromUnit(), request.fromAmount(),
-					request.targetUnit(), request.fromAmount() * getMethod.run()/conversion.getOunces());
+					request.targetUnit(), request.fromAmount() * method.get()/conversion.getOunces());
 		} else {
 			return new ConversionResponse(request.food(), request.fromUnit(), request.fromAmount(),
-					request.targetUnit(), request.fromAmount() * getMethod.run()/conversion.getGrams());
+					request.targetUnit(), request.fromAmount() * method.get()/conversion.getGrams());
 		}
 	}
 
@@ -60,7 +61,5 @@ public class FoodConversionConverter {
 		return validUom;
 	}
 	
-	interface UomFunction {
-		Double run();
-	}
+
 }

@@ -21,5 +21,11 @@ public class ConversionExceptionController {
 	public ResponseEntity<Object> exception(FoodConversionNotExistException exception) {
 		return new ResponseEntity<Object>("Conversion does not exist", HttpStatus.BAD_REQUEST);
 	}
+	
+	@ExceptionHandler(value = FoodsNotExistException.class)
+	public ResponseEntity<Object> exception(FoodsNotExistException exception) {
+		return new ResponseEntity<Object>("Foods do not exist", HttpStatus.BAD_REQUEST);
+	}
+
 
 }

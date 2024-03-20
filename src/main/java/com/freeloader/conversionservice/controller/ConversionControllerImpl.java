@@ -5,29 +5,24 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
-import com.freeloader.conversionservice.FoodConversionServiceApplication;
 import com.freeloader.conversionservice.exception.FoodConversionAlreadyExistsException;
 import com.freeloader.conversionservice.exception.FoodConversionNotExistException;
+import com.freeloader.conversionservice.exception.FoodsNotExistException;
 import com.freeloader.conversionservice.exception.UnknownConversionExcpetion;
 import com.freeloader.conversionservice.model.ConversionRequest;
 import com.freeloader.conversionservice.model.ConversionResponse;
 import com.freeloader.conversionservice.model.FoodConversionRequest;
 import com.freeloader.conversionservice.model.FoodConversionResponse;
-import com.freeloader.conversionservice.model.UomRequest;
+import com.freeloader.conversionservice.model.UomResponse;
 import com.freeloader.conversionservice.service.ConversionService;
-import com.freeloader.conversionservice.service.ConversionServiceImpl;
 
 @RestController
 @CrossOrigin
@@ -46,38 +41,44 @@ public class ConversionControllerImpl implements ConversionController {
 
 	public  ResponseEntity<ConversionResponse> determineConversionValues(@RequestBody ConversionRequest request) {
 		log.info("Conversion Being called with" + request.toString());
-		ConversionResponse response = service.findDetailsForFoodAndQuantity(request);
-		if (response == null) {
+		ConversionResponse response;
+		try {
+			response = service.findDetailsForFoodAndQuantity(request);
+		} catch (FoodConversionNotExistException e) {
+			return  new ResponseEntity<ConversionResponse>(HttpStatus.NOT_FOUND);
+		} catch (Exception e) {
 			return  new ResponseEntity<ConversionResponse>(HttpStatus.NOT_FOUND);
 		}
 		log.info("The calculated conversion response: " + response.toString());
-		return new ResponseEntity<ConversionResponse>(response, HttpStatus.OK);
-		
+		return new ResponseEntity<ConversionResponse>(response, HttpStatus.OK);		
 	}
 
 
 	@Override
 	public ResponseEntity<List<String>> retrieveValidFoods() {
 		log.info("Got message to retrieve available foods");
-		List<String> allValidFoods = service.findAllValidFoods();
-		log.info("Found available foods of: " + allValidFoods.toString() );
-				
-		if (allValidFoods == null ||  allValidFoods.isEmpty()) {
+		List<String> allValidFoods;
+		try {
+			allValidFoods = service.findAllValidFoods();
+		} catch (FoodsNotExistException e) {
+			return  new ResponseEntity<List<String>>(HttpStatus.NOT_FOUND);
+		} catch (Exception e) {
 			return  new ResponseEntity<List<String>>(HttpStatus.NOT_FOUND);
 		}
+		log.info("Found available foods of: " + allValidFoods.toString() );						
 		return new ResponseEntity<List<String>>(allValidFoods, HttpStatus.OK); 
 	}
 
 
 	@Override
-	public ResponseEntity<List<String>>  retrieveValidUom(@PathVariable String foodId) {	
+	public ResponseEntity<UomResponse>  retrieveValidUom(@PathVariable String foodId) {	
 		log.info("Got message to get all avilable uom for: " + foodId);
-		List<String> uoms = service.findAllUomForFood(foodId);
+		UomResponse uoms = new UomResponse(service.findAllUomForFood(foodId));
 		log.info("Found uoms foods of: " + uoms.toString() );
-		if (uoms.isEmpty()) {
-			return  new ResponseEntity<List<String>>(HttpStatus.NOT_FOUND); 
+		if (uoms.uoms().isEmpty()) {
+			return  new ResponseEntity<UomResponse>(HttpStatus.NOT_FOUND); 
 		}
-		return new ResponseEntity<List<String>>(uoms, HttpStatus.OK);
+		return new ResponseEntity<UomResponse>(uoms, HttpStatus.OK);
 	}
 
 
